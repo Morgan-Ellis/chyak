@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- PWA 핵심: 경로에서 /를 제거했습니다 -->
+    <!-- PWA 경로 수정: /를 제거하여 GitHub Pages 대응 -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
     <link rel="apple-touch-icon" href="icon-192.png">
@@ -11,48 +11,43 @@
     <style>
         :root { --primary: #4a90e2; --success: #2ecc71; --danger: #e74c3c; --gray: #6c757d; --deck: #f39c12; --folder: #8e44ad; --memo: #f1f4f8; }
         
-        /* 모바일 화면 이탈 방지 핵심 설정 */
+        /* [핵심] 모바일 화면 이탈 방지 설정 */
         * { box-sizing: border-box; } 
-        
         body { font-family: -apple-system, "Malgun Gothic", sans-serif; margin: 0; padding: 15px; user-select: none; transition: background-color 0.3s; position: relative; min-height: 100vh; overflow-x: hidden; }
         
         /* [배경] 위장 레이어 */
         body.secret-mode { background-color: #ffffff !important; overflow-y: auto; }
         #secretHeader { display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 800px; z-index: -1; text-align: left; font-size: 24px; font-weight: 800; color: #000; border-bottom: 2px solid #000; padding-bottom: 15px; letter-spacing: -1px; background: white; }
         body.secret-mode #secretHeader { display: block; }
-        
         #secretContentLayer { display: none; position: absolute; top: 100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 800px; color: #333333; font-size: 15px; line-height: 2.2; padding: 40px 20px 200px 20px; z-index: -2; pointer-events: none; text-align: justify; white-space: pre-wrap; }
         body.secret-mode #secretContentLayer { display: block; }
 
         .container { max-width: 800px; margin: 0 auto; position: relative; transition: opacity 0.2s; width: 100%; }
         .settings-container { position: absolute; top: 0; right: 0; z-index: 1000; display: flex; align-items: center; gap: 10px; }
-        .btn-settings, .btn-blind { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--gray); padding: 5px; transition: transform 0.1s; }
-        .settings-menu { display: none; position: absolute; top: 45px; right: 0; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 220px; z-index: 1001; }
+        .btn-settings, .btn-blind { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--gray); padding: 5px; }
+        .settings-menu { display: none; position: absolute; top: 45px; right: 0; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 240px; z-index: 1001; }
         
-        /* 입력창 그룹 모바일 최적화 */
-        .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 25px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); width: 100%; }
-        .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; font-size: 16px; } /* 16px 미만은 iOS 자동 줌인 발생함 */
+        .custom-title-input { width: 100%; padding: 8px; margin-bottom: 5px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; }
+        .custom-text-box { width: 100%; height: 70px; margin-bottom: 10px; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; resize: none; }
+
+        /* [수정] 모바일에서 입력창이 밖으로 나가지 않도록 flex-direction 조정 */
+        .input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); width: 100%; }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; font-size: 16px; }
         .btn-add { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
 
         #folderContainer { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
         .folder-wrapper { border-radius: 18px; overflow: hidden; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .folder-header { display: flex; flex-direction: column; background: var(--folder); color: white; padding: 12px; cursor: pointer; min-height: 90px; justify-content: center; align-items: center; text-align: center; }
-        .folder-title { font-weight: bold; font-size: 13px; word-break: break-all; }
-        .folder-btns { display: flex; gap: 4px; margin-top: 8px; }
-        .folder-btn { background: rgba(255,255,255,0.25); border: none; color: white; padding: 3px 6px; border-radius: 4px; cursor: pointer; font-size: 10px; }
-        .folder-content { display: none; padding: 10px; background: #f9f9f9; border-top: 1px solid #eee; width: 100%; }
-
-        .quiz-grid { display: grid; grid-template-columns: 1fr; gap: 15px; padding: 10px 0; }
-        .quiz-card { background: white; min-height: 140px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; padding: 15px; position: relative; width: 100%; }
+        .folder-header { display: flex; flex-direction: column; background: var(--folder); color: white; padding: 12px; cursor: pointer; min-height: 100px; justify-content: center; align-items: center; text-align: center; }
+        
+        .quiz-grid { display: grid; grid-template-columns: 1fr; gap: 15px; padding: 10px 0; width: 100%; }
+        .quiz-card { background: white; min-height: 160px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; padding: 15px; position: relative; width: 100%; }
         .quiz-card.is-deck { border: 2px solid var(--deck); background: #fffdf9; }
-        .hint-text { font-size: 16px; font-weight: bold; color: #333; line-height: 1.4; word-break: break-all; }
-        .card-actions { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
-        .btn-sm { padding: 6px 10px; font-size: 11px; border-radius: 6px; border: none; color: white; cursor: pointer; flex-grow: 1; text-align: center; }
+        .hint-text { font-size: 16px; font-weight: bold; color: #333; word-break: break-all; }
+        .memo-display { font-size: 12px; color: #666; background: #f1f4f8; padding: 5px; border-radius: 4px; margin-top: 5px; }
 
         #gameOverlay { display: none; position: fixed; top:0; left:0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         .game-content { width: 100%; max-width: 400px; text-align: center; background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 
-        /* 데스크탑에서 폴더/그리드 확장 */
         @media (min-width: 600px) {
             #folderContainer { grid-template-columns: repeat(3, 1fr); }
             .quiz-grid { grid-template-columns: repeat(2, 1fr); }
@@ -72,41 +67,41 @@
     <div class="settings-menu" id="settingsMenu">
         <div style="font-size: 11px; font-weight: bold; color: #666; margin-bottom: 8px;">배경 테마</div>
         <div id="colorPaletteMain" style="display:flex; flex-wrap: wrap; gap:8px; margin-bottom: 12px;"></div>
+        
+        <div style="font-size: 10px; font-weight: bold; color: #888; margin-bottom: 5px;">위장 모드 설정</div>
+        <input type="text" id="customSecretTitle" class="custom-title-input" placeholder="헤드라인..." oninput="previewSecretContent()">
+        <textarea id="customSecretText" class="custom-text-box" placeholder="본문 내용..." oninput="previewSecretContent()"></textarea>
+
+        <div style="background:#f8f9fa; padding:10px; border-radius:8px; margin-bottom:8px;">
+            <label style="font-size:11px;">투명도: <span id="opValMain">1.0</span></label>
+            <input type="range" class="opInput" min="0" max="1.0" step="0.1" value="1.0" oninput="changeOpacity(this.value)" style="width:100%;">
+        </div>
         <button onclick="addFolder()" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; cursor:pointer; background:#eee; font-weight:bold; font-size:11px;">📁 폴더 추가</button>
     </div>
 </div>
 
 <div class="container" id="mainContainer">
-    <h2 id="mainTitle">📚 학습 카드</h2>
+    <h2 id="mainTitle">📚 학습 카드 플래너</h2>
     <div id="folderContainer"></div>
-    
-    <!-- 모바일 이탈 해결된 입력 그룹 -->
     <div class="input-group">
         <input type="text" id="hintInput" placeholder="힌트 입력" autocomplete="off">
         <input type="text" id="answerInput" placeholder="정답 입력" autocomplete="off" onkeypress="if(event.key==='Enter') addQuiz()">
         <button class="btn-add" onclick="addQuiz()">등록</button>
     </div>
-    
     <div id="mainDropZone" ondragover="event.preventDefault();" ondrop="dropToMain(event)">
         <div id="quizList" class="quiz-grid"></div>
     </div>
 </div>
 
-<!-- 게임 오버레이 -->
 <div id="gameOverlay">
     <div class="game-content" id="gameContentBox">
         <div style="text-align: right;"><button onclick="closeGame()" style="border:none; background:none; font-size:24px;">✕</button></div>
         <div id="displayHint" style="font-size: 20px; padding: 20px; background: #f8f9fa; border-radius: 15px; margin-bottom: 20px; word-break: break-all;"></div>
         <input type="text" id="gameAnswerInput" placeholder="정답 입력..." autocomplete="off" style="width: 100%; padding: 15px; font-size: 18px; border: 2px solid #ddd; border-radius: 12px;">
-        
         <div id="defaultActions" style="margin-top:15px;"><button onclick="checkGameAnswer()" style="background:var(--primary); width:100%; padding:15px; color:white; border:none; border-radius:12px; font-weight:bold;">확인 (Enter)</button></div>
-        <div id="wrongActions" style="display:none; margin-top:15px;">
-            <p id="wrongMsg" style="color:var(--danger); font-weight:bold;"></p>
-            <button onclick="showAnswerText()" style="background:var(--gray); width:100%; padding:15px; color:white; border:none; border-radius:12px;">정답 보기</button>
-        </div>
         <div id="resultActions" style="display:none; margin-top:20px;">
             <p id="resultMsg" style="font-weight:bold; font-size:18px; color:var(--success);"></p>
-            <button id="nextBtn" onclick="nextQuestion()" style="background:var(--success); width:100%; padding:15px; color:white; border:none; border-radius:12px; font-weight:bold;">다음 문제 (Enter)</button>
+            <button id="nextBtn" onclick="nextQuestion()" style="background:var(--success); width:100%; padding:15px; color:white; border:none; border-radius:12px; font-weight:bold;">다음 (Enter)</button>
             <div id="finishOptions" style="display:none; gap:10px; margin-top:10px;">
                 <button id="replayBtn" style="background:var(--primary); flex:1; padding:15px; color:white; border:none; border-radius:12px;">다시 풀기</button>
                 <button onclick="closeGame()" style="background:#333; flex:1; padding:15px; color:white; border:none; border-radius:12px;">종료</button>
@@ -116,32 +111,97 @@
 </div>
 
 <script>
-    // 1. PWA 서비스 워커 등록 (경로 수정됨)
+    // PWA 서비스 워커 등록
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('SW 등록 완료'))
-                .catch(err => console.log('SW 등록 실패', err));
+                .then(() => console.log("SW Registered"))
+                .catch(err => console.log("SW Failed", err));
         });
     }
 
-    // 데이터 로드
+    const fixedThemes = [
+        {name:'gray', h:210, s:15, l:60}, {name:'v-red', h:0, s:95, l:55}, {name:'v-yellow', h:48, s:100, l:50},
+        {name:'v-green', h:145, s:90, l:45}, {name:'v-blue', h:215, s:95, l:55}, {name:'v-purple', h:280, s:90, l:60}, {name:'v-pink', h:330, s:95, l:65}
+    ];
+
     let quizzes = JSON.parse(localStorage.getItem('v6_main')) || [];
     let folders = JSON.parse(localStorage.getItem('v6_folders')) || [];
+    let customThemes = JSON.parse(localStorage.getItem('v6_custom_themes')) || [{name:'secret_0', title:'[단독] 위장 모드', content:'내용을 입력하세요!'}];
     let currentThemeName = localStorage.getItem('v6_theme') || 'gray';
     let currentOpacity = localStorage.getItem('v6_op') || '1.0';
-    let currentDensity = localStorage.getItem('v6_density') || '30';
     let isGameActive = false, isResultState = false, currentDeck = [], currentIdxInDeck = 0;
 
-    const fixedThemes = [{name:'gray', h:210, s:15, l:60}, {name:'v-blue', h:215, s:95, l:55}, {name:'v-green', h:145, s:90, l:45}];
+    const getList = (fIdx) => fIdx === null ? quizzes : folders[fIdx].items;
 
     function save() {
         localStorage.setItem('v6_main', JSON.stringify(quizzes));
         localStorage.setItem('v6_folders', JSON.stringify(folders));
+        localStorage.setItem('v6_custom_themes', JSON.stringify(customThemes));
+        localStorage.setItem('v6_theme', currentThemeName);
+        localStorage.setItem('v6_op', currentOpacity);
         render();
     }
 
-    const getList = (fIdx) => fIdx === null ? quizzes : folders[fIdx].items;
+    function toggleSettings() {
+        const m = document.getElementById('settingsMenu');
+        m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+        if(m.style.display === 'block') renderThemeButtons();
+    }
+
+    function changeOpacity(val) {
+        currentOpacity = val;
+        document.getElementById('mainContainer').style.opacity = val;
+        document.getElementById('gameContentBox').style.opacity = val;
+        document.getElementById('opValMain').innerText = val;
+        localStorage.setItem('v6_op', val);
+    }
+
+    function cycleOpacity() {
+        let nextOp = (currentOpacity >= 1.0) ? "0" : (currentOpacity == "0") ? "0.2" : "1.0";
+        changeOpacity(nextOp);
+    }
+
+    function previewSecretContent() {
+        const titleVal = document.getElementById('customSecretTitle').value;
+        const textVal = document.getElementById('customSecretText').value;
+        if (currentThemeName.startsWith('secret_')) {
+            document.getElementById('secretHeader').innerText = "📰 " + titleVal;
+            document.getElementById('secretContentLayer').innerText = textVal;
+            const target = customThemes.find(t => t.name === currentThemeName);
+            if(target) { target.title = titleVal; target.content = textVal; }
+        }
+    }
+
+    function updateBgColor(themeName) {
+        if(themeName) currentThemeName = themeName;
+        const body = document.body;
+        const custom = customThemes.find(t => t.name === currentThemeName);
+        if(custom) {
+            body.classList.add('secret-mode');
+            document.getElementById('secretHeader').innerText = "📰 " + (custom.title || "");
+            document.getElementById('secretContentLayer').innerText = custom.content;
+        } else {
+            const theme = fixedThemes.find(t => t.name === currentThemeName) || fixedThemes[0];
+            body.classList.remove('secret-mode');
+            body.style.backgroundColor = `hsl(${theme.h}, ${theme.s}%, ${theme.l}%)`;
+        }
+        renderThemeButtons();
+    }
+
+    function renderThemeButtons() {
+        const palette = document.getElementById('colorPaletteMain');
+        if(!palette) return;
+        palette.innerHTML = '';
+        fixedThemes.concat(customThemes).forEach(t => {
+            const dot = document.createElement('div');
+            dot.style.cssText = `width:26px; height:26px; border-radius:50%; cursor:pointer; border:${currentThemeName===t.name?'3px solid #4a90e2':'1px solid #ddd'};`;
+            dot.style.backgroundColor = t.h ? `hsl(${t.h}, ${t.s}%, ${t.l}%)` : '#eee';
+            if(!t.h) dot.innerHTML = '📰';
+            dot.onclick = () => { updateBgColor(t.name); save(); };
+            palette.appendChild(dot);
+        });
+    }
 
     function render() {
         renderGrid('quizList', quizzes, null);
@@ -158,7 +218,7 @@
                         <button class="folder-btn" onclick="event.stopPropagation(); deleteFolder(${fIdx})">삭제</button>
                     </div>
                 </div>
-                <div class="folder-content" id="fContent${fIdx}" style="display: ${f.isOpen ? 'block' : 'none'}">
+                <div class="folder-content" style="display: ${f.isOpen ? 'block' : 'none'}">
                     <div id="fGrid${fIdx}" class="quiz-grid"></div>
                 </div>`;
             fContainer.appendChild(wrapper);
@@ -172,33 +232,36 @@
             const card = document.createElement('div'); card.className = `quiz-card ${item.isDeck ? 'is-deck' : ''}`;
             card.draggable = true;
             card.ondragstart = (e) => e.dataTransfer.setData('text', JSON.stringify({idx, folderIdx}));
+            card.ondrop = (e) => { e.preventDefault(); const dragData = JSON.parse(e.dataTransfer.getData('text')); if(dragData.folderIdx === folderIdx && dragData.idx !== idx) combineItems(dragData.idx, idx, folderIdx); };
             card.innerHTML = `
                 <div class="hint-text">${item.isDeck ? '📦 '+item.hint : '❓ '+item.hint}</div>
+                ${item.memo ? `<div class="memo-display">📝 ${item.memo}</div>` : ''}
                 <div class="card-actions">
-                    <button class="btn-sm" style="background:var(--success)" onclick="startLearning(${idx}, ${folderIdx})">풀기</button>
-                    <button class="btn-sm" style="background:var(--danger)" onclick="deleteItem(${idx}, ${folderIdx})">삭제</button>
+                    <button class="btn-sm" style="background:var(--success); border:none; color:white; padding:5px; border-radius:4px; cursor:pointer;" onclick="startLearning(${idx}, ${folderIdx})">풀기</button>
+                    <button class="btn-sm" style="background:var(--primary); border:none; color:white; padding:5px; border-radius:4px; cursor:pointer;" onclick="addMemo(${idx}, ${folderIdx})">메모</button>
+                    <button class="btn-sm" style="background:var(--danger); border:none; color:white; padding:5px; border-radius:4px; cursor:pointer;" onclick="deleteItem(${idx}, ${folderIdx})">삭제</button>
                 </div>`;
             el.appendChild(card);
         });
     }
 
-    // 문제 풀기 로직
     function startLearning(idx, fIdx) {
         const itm = getList(fIdx)[idx];
         currentDeck = itm.isDeck ? [...itm.cards] : [itm];
         currentIdxInDeck = 0; isGameActive = true;
         document.getElementById('mainContainer').style.visibility = 'hidden';
+        document.getElementById('replayBtn').onclick = () => startLearning(idx, fIdx);
         showGameStep();
     }
 
     function showGameStep() {
-        isResultState = false;
-        const q = currentDeck[currentIdxInDeck];
+        isResultState = false; const q = currentDeck[currentIdxInDeck];
         document.getElementById('gameOverlay').style.display = 'flex';
         document.getElementById('displayHint').innerText = q.hint;
         const input = document.getElementById('gameAnswerInput');
         input.value = ''; input.disabled = false;
-        showActionGroup('default');
+        document.getElementById('resultActions').style.display = 'none';
+        document.getElementById('defaultActions').style.display = 'block';
         setTimeout(() => input.focus(), 150);
     }
 
@@ -208,85 +271,70 @@
             document.getElementById('resultMsg').innerText = "⭕ 정답입니다!";
             showResultUI();
         } else {
-            document.getElementById('wrongMsg').innerText = "❌ 다시 시도해보세요!";
-            showActionGroup('wrong');
-            input.value = ''; input.focus();
+            alert("❌ 오답입니다!"); input.value = ''; input.focus();
         }
     }
 
-    function showResultUI() { 
-        showActionGroup('result'); 
-        isResultState = true; 
-        document.getElementById('gameAnswerInput').disabled = true; 
+    function showResultUI() {
+        isResultState = true;
+        document.getElementById('defaultActions').style.display = 'none';
+        document.getElementById('resultActions').style.display = 'block';
+        document.getElementById('nextBtn').style.display = (currentIdxInDeck < currentDeck.length - 1) ? 'block' : 'none';
+        document.getElementById('finishOptions').style.display = (currentIdxInDeck >= currentDeck.length - 1) ? 'flex' : 'none';
     }
 
-    function nextQuestion() {
-        if(currentIdxInDeck < currentDeck.length - 1) {
-            currentIdxInDeck++;
-            showGameStep();
-        } else {
-            document.getElementById('resultMsg').innerText = "🎊 모든 문제를 완료했습니다!";
-            document.getElementById('nextBtn').style.display = 'none';
-            document.getElementById('finishOptions').style.display = 'flex';
-        }
-    }
-
-    function showActionGroup(t) {
-        ['default', 'wrong', 'result'].forEach(g => document.getElementById(g + 'Actions').style.display = (t === g ? 'block' : 'none'));
-        document.getElementById('nextBtn').style.display = (t === 'result' ? 'block' : 'none');
-    }
-
+    function nextQuestion() { currentIdxInDeck++; showGameStep(); }
     function closeGame() { isGameActive = false; document.getElementById('gameOverlay').style.display = 'none'; document.getElementById('mainContainer').style.visibility = 'visible'; }
 
     function addQuiz() {
         const h = document.getElementById('hintInput'), a = document.getElementById('answerInput');
         if(!h.value || !a.value) return;
-        quizzes.unshift({ hint: h.value, answer: a.value, isDeck: false });
+        quizzes.unshift({ hint: h.value, answer: a.value, isDeck: false, memo: '' });
         h.value = ''; a.value = ''; h.focus(); save();
     }
 
+    function addMemo(idx, fIdx) { const m = prompt("메모 입력:", getList(fIdx)[idx].memo); if(m !== null) { getList(fIdx)[idx].memo = m; save(); } }
+    function combineItems(fIdx, tIdx, fIndex) {
+        const list = getList(fIndex);
+        let from = list[fIdx], to = list[tIdx];
+        let cards = (from.isDeck ? from.cards : [from]).concat(to.isDeck ? to.cards : [to]);
+        list.splice(Math.max(fIdx, tIdx), 1); list.splice(Math.min(fIdx, tIdx), 1);
+        list.unshift({ hint: to.hint, isDeck: true, cards, memo: '' });
+        save();
+    }
+
     function addFolder() { folders.push({name: "새 폴더", items: [], isOpen: false, editing: true}); save(); }
-    function deleteItem(idx, fIdx) { if(confirm("삭제할까요?")) { getList(fIdx).splice(idx, 1); save(); } }
     function toggleFolder(idx) { folders[idx].isOpen = !folders[idx].isOpen; render(); }
-    function deleteFolder(idx) { if(confirm("폴더를 삭제할까요?")) { folders.splice(idx, 1); save(); } }
+    function deleteFolder(idx) { if(confirm("폴더 삭제?")) { folders.splice(idx, 1); save(); } }
     function editFolderName(idx) { folders[idx].editing = true; render(); }
     function saveFolderName(idx) { folders[idx].name = document.getElementById(`fIn${idx}`).value || "폴더"; folders[idx].editing = false; save(); }
+    function deleteItem(idx, fIdx) { if(confirm("삭제?")) { getList(fIdx).splice(idx, 1); save(); } }
 
     function dropToFolder(e, fIdx) {
-        e.preventDefault();
-        const dragData = JSON.parse(e.dataTransfer.getData('text'));
+        e.preventDefault(); const dragData = JSON.parse(e.dataTransfer.getData('text'));
         if(dragData.folderIdx === fIdx) return;
         const [item] = getList(dragData.folderIdx).splice(dragData.idx, 1);
-        folders[fIdx].items.unshift(item);
-        save();
+        folders[fIdx].items.unshift(item); save();
     }
 
     function dropToMain(e) {
-        e.preventDefault();
-        const dragData = JSON.parse(e.dataTransfer.getData('text'));
+        e.preventDefault(); const dragData = JSON.parse(e.dataTransfer.getData('text'));
         if(dragData.folderIdx === null) return;
         const [item] = getList(dragData.folderIdx).splice(dragData.idx, 1);
-        quizzes.unshift(item);
-        save();
+        quizzes.unshift(item); save();
     }
 
-    // 엔터 키 이벤트 (PWA 앱 경험 핵심)
     window.onkeydown = (e) => {
-        if (e.key === 'Enter') {
-            if (isGameActive) {
-                e.preventDefault();
-                if (document.getElementById('finishOptions').style.display === 'flex') closeGame();
-                else if (isResultState) nextQuestion();
-                else checkGameAnswer();
-            }
+        if (isGameActive && e.key === 'Enter') {
+            e.preventDefault();
+            if (document.getElementById('finishOptions').style.display === 'flex') closeGame();
+            else if (isResultState) nextQuestion();
+            else checkGameAnswer();
         }
     };
 
-    function toggleSettings() {
-        const m = document.getElementById('settingsMenu');
-        m.style.display = (m.style.display === 'block') ? 'none' : 'block';
-    }
-
+    updateBgColor(currentThemeName);
+    changeOpacity(currentOpacity);
     render();
 </script>
 </body>

@@ -1,23 +1,22 @@
 {
-  "name": "Chyak",
-  "short_name": "Chyak",
-  "start_url": "index.html",
-  "scope": "./",
+  "name": "chyak",
+  "short_name": "chyak",
+  "start_url": "/chyak/index.html",
+  "scope": "/chyak/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#000000",
   "theme_color": "#000000",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "chyak.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
       "src": "chyak.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }

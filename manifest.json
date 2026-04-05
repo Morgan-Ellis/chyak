@@ -1,9 +1,5 @@
-  "name": "Chyak",
-  "short_name": "Chyak",
-  "start_url": "./index.html",
-  "scope": "./",
-  "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+{
+  "start_url": "/index.html", 
+  "scope": "/",
   "icons":
+}
